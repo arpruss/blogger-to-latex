@@ -1,0 +1,120 @@
+%%
+%% Customize layout
+%%
+\documentclass[titlepage,twocolumn,twoside,openright,final,11pt]{book}
+\usepackage[paperheight=11in,paperwidth=8.5in,rmargin=0.5in,lmargin=0.5in,tmargin=0.75in,bmargin=0.75in,bindingoffset=0.5in]{geometry}
+\usepackage{mathpazo}
+
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{environ}
+\usepackage{graphicx}
+
+\def\super#1{\ensuremath{^{\textrm{#1}}}}
+
+% The following commands handle nested bold and italic, including ones
+% that start before an environment or change within an environment and
+% need to propagate outward.  Use \restorestyle{} after the \end{env}
+% command.
+
+\newcounter{boldcount}
+\def\setbold{%
+   \ifnum\value{boldcount} > 0%
+      \bfseries%
+   \else%
+      \mdseries%
+   \fi}
+
+\def\boldify{\stepcounter{boldcount}\setbold}
+\def\unboldify{\addtocounter{boldcount}{-1}\setbold}
+
+\newcounter{italcount}
+\def\setitalic{%
+   \ifnum\value{italcount} > 0%
+      \itshape%
+   \else%
+      \upshape%
+   \fi}
+
+\def\italicize{\stepcounter{italcount}\setitalic}
+\def\unitalicize{\addtocounter{italcount}{-1}\setitalic}
+
+\def\restorestyle{\setbold\setitalic}
+\def\resetstyle{\setcounter{boldcount}{0}\setcounter{italcount}{0}\restorestyle}
+
+\def\nspace{\hspace{0pt}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% Easily customizable formatting goes here
+%%
+
+% The following two post macros have arguments: title, date, url, author, tags
+
+%% This is called at top of each post
+\def\startblogpost#1#2#3#4#5{%
+  \subsection*{#2 \\ #1}%
+}
+
+%% This is called at the bottom of each post
+\def\finishblogpost#1#2#3#4#5{%
+}
+
+\def\postsubhead#1{%
+  \subsection*{#1}}
+
+%% This is called when it's time for a new year
+\def\nextyear#1{\resetstyle%
+  \chapter*{#1}}
+
+% The following two comment macros have arguments: author, date
+
+%% Each comment starts with this
+\def\startblogcomment#1#2{%
+  \subsubsection*{#2, by #1}%
+}
+
+\def\finishblogcomment#1#2{%
+}
+
+% The following two comment macros start and end the comments section
+% after a blog post.
+
+\def\startblogcomments{%
+  \subsection*{Comments}%
+}
+
+\def\finishblogcomments{%
+}
+
+% skip invalid images
+\def\blogimageinvalid#1{}
+
+% center images
+\def\blogimage#1#2{\centerline{\includegraphics[#1]{#2}}}
+
+% format link in footnote
+\def\bloglink#1{\footnote{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NewEnviron{blogcomment}[3]{\resetstyle\ifnum #1=1%
+   \startblogcomment{#2}{#3}\expandafter\BODY\finishblogcomment{#2}{#3}\fi}
+
+\NewEnviron{blogpost}[6]{\resetstyle\ifnum #1=1%
+   \startblogpost{#2}{#3}{#4}{#5}{#6}\expandafter\BODY\finishblogpost{#2}{#3}{#4}{#5}{#6}\fi}
+
+\NewEnviron{blogcomments}[1]{\resetstyle\ifnum #1=1%
+   \startblogcomments\expandafter\BODY\finishblogcomments\fi}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\title{Pruss's Astronomy Blog\\
+http://prussastro.blogspot.com}
+\author{Alexander R. Pruss}
+\date{May, 2013}
+
+\begin{document}
+\maketitle
+\sloppy
